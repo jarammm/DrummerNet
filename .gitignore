@@ -1,0 +1,5 @@
+data_drumstems/
+data_evals/
+*.pyc
+**/__pycache__/
+drummernet/results/
