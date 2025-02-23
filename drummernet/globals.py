@@ -24,7 +24,7 @@ HOP = 1024 // 2
 
 HOME = os.getenv('HOME')
 EVALDATA_PATH = os.path.join('../data_evals')
-DATA_PATH = '../data_drum_sources'
+DATA_PATH = '../data_drum_sources_bdt'
 DRUMSTEM_PATH = os.path.join('../data_drumstems_bdt')
 
 USE_CUDA = torch.cuda.is_available()
@@ -51,5 +51,5 @@ TCDTYPE = torch.get_default_dtype()
 # DRUM_NAMES = ['KD_KD', 'SD_SD', 'HH_CHH', 'HH_OHH', 'HH_PHH', 'TT_HIT', 'TT_MHT',
 #               'TT_HFT', 'CY_RDC', 'CY_CRC', 'OT_TMB']
 # N_DRUM_VSTS = 12
-DRUM_NAMES = ['KD', 'SD', 'HH', 'CY']
-N_DRUM_VSTS = 4
+DRUM_NAMES = ['KD', 'CL', 'HH', 'CY']
+N_DRUM_VSTS = 21
