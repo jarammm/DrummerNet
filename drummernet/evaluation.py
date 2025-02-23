@@ -381,3 +381,13 @@ def get_ddf_mdb():
         audio_folder='audio/drum_only'
     )
     return ddf_mdb
+
+def get_ddf_bdt():
+    """smt dataset loading function"""
+    ddf_smt = DrumDatasetFolder(
+        os.path.join(EVALDATA_PATH, 'BDT_DRUMS'), 'bdt',
+        label_map={'0': 'KD', '1': 'CL', '2': 'HH', '3': 'CY'},
+        ann_folder='annotations',
+        audio_folder='audio'
+    )
+    return ddf_smt

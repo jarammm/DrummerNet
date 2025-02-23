@@ -25,7 +25,7 @@ HOP = 1024 // 2
 HOME = os.getenv('HOME')
 EVALDATA_PATH = os.path.join('../data_evals')
 DATA_PATH = '../data_drum_sources'
-DRUMSTEM_PATH = os.path.join('../data_drumstems')
+DRUMSTEM_PATH = os.path.join('../data_drumstems_bdt')
 
 USE_CUDA = torch.cuda.is_available()
 
