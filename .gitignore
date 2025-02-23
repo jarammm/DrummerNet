@@ -1,4 +1,6 @@
-data_drumstems/
+data_drumstems_groove/
+data_drumstems_bdt/
+beatbox/
 data_evals/
 *.pyc
 **/__pycache__/
