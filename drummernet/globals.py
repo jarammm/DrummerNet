@@ -48,6 +48,8 @@ else:
 NPDTYPE = np.float32
 TCDTYPE = torch.get_default_dtype()
 
-DRUM_NAMES = ['KD_KD', 'SD_SD', 'HH_CHH', 'HH_OHH', 'HH_PHH', 'TT_HIT', 'TT_MHT',
-              'TT_HFT', 'CY_RDC', 'CY_CRC', 'OT_TMB']
-N_DRUM_VSTS = 12
+# DRUM_NAMES = ['KD_KD', 'SD_SD', 'HH_CHH', 'HH_OHH', 'HH_PHH', 'TT_HIT', 'TT_MHT',
+#               'TT_HFT', 'CY_RDC', 'CY_CRC', 'OT_TMB']
+# N_DRUM_VSTS = 12
+DRUM_NAMES = ['KD', 'SD', 'HH', 'CY']
+N_DRUM_VSTS = 4
