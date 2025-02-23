@@ -291,20 +291,20 @@ class DrumEvaluator(object):
                 if key in onsets_dict:
                     ref_onset = onsets_dict[key]
                 else:
-                    ref_onset = np.array([])
+                    ref_onset = []
                 ref_onset_song.append(ref_onset)
             # ValueError: setting an array element with a sequence.
             # The requested array has an inhomogeneous shape after 1 dimensions.
             # The detected shape was (3,) + inhomogeneous part.
-            self.est_onsets[song_idx] = np.array(est_onset_song) #FIXME
-            self.ref_onsets[song_idx] = np.array(ref_onset_song)
+            self.est_onsets[song_idx] = est_onset_song #FIXME
+            self.ref_onsets[song_idx] = ref_onset_song
 
     def mir_eval(self):
         """run mir_eval for the final performance measure"""
         self.reset_data()
         for ref_onset, est_onset in zip(self.ref_onsets, self.est_onsets):
             for i, key in enumerate(self.component_names):
-                f_score = mir_eval.onset.f_measure(ref_onset[i], est_onset[i])  # F, P, R
+                f_score = mir_eval.onset.f_measure(np.array(ref_onset[i]), np.array(est_onset[i]))  # F, P, R
                 self.f_scores[key].append(f_score)
 
     # thor:  maybe move the plots and prints to their own file?
