@@ -15,6 +15,8 @@ import time_freq
 import custom_losses
 from drummer_net import DrummerNet
 from util_etc import dcnp
+import wandb
+
 
 fib = lambda n: pow(2 << n, n + 1, (4 << 2 * n) - (2 << n) - 1) % (2 << n)
 FIBS = [fib(i) for i in range(50)]
@@ -120,6 +122,7 @@ class DrummerNetTrainer(object):
                           (self.exp_name, self.n_seen_items))
 
         self.evaluate(result_subfolder='items_' + str(self.n_seen_items))
+        torch.save(self.drummer_net.state_dict(), f'items_{str(self.n_seen_items)}.pth')
 
     def train_epoch(self, tr_loader):
         """train the model for one epoch
@@ -197,42 +200,28 @@ class DrummerNetTrainer(object):
 
         """
         self.drummer_net.eval()
-        os.makedirs(os.path.join(self.result_folder, result_subfolder), exist_ok=True)
         keys = ['KD', 'CL', 'HH', 'CY']
         for evaler in self.evalers:
             ddf_name = evaler.ddf.name
-            path = os.path.join(self.result_folder, result_subfolder,
-                                'f1_scores_%s.pkl' % ddf_name)
 
             evaler.predict(verbose=True)
             evaler.pickpeaks(evaluation.pickpeak_fix, verbose=True)
             evaler.mir_eval()
-            # save prediction
-            with open(path, 'wb') as f_write:
-                pickle.dump(evaler.f_scores, f_write)  # {'KD': (n_songs, 3) array}
-            np_path = os.path.join(self.result_folder, result_subfolder, 'est_irs_%s.npz' % ddf_name)
-            np.savez_compressed(np_path, *evaler.midis)  # list of np.array (N, 3)
 
-            scores = np.zeros((1, 4))
+            scores = np.zeros((1, 5))
             scores[0, 0] = self.n_seen_items
 
             for i, key in enumerate(keys):
                 scores[0, i + 1] = np.array(evaler.f_scores[key]).mean(axis=0)[0]
 
             self.scores[ddf_name] = np.concatenate((self.scores[ddf_name], scores), axis=0)
-            np.save(os.path.join(self.result_folder, result_subfolder, 'f1_scores_%s.npy' % ddf_name),
-                    arr=self.scores[ddf_name])
-            # draw the scores so far
-            plt.figure(figsize=(6, 2))
-            plt.plot(self.scores[ddf_name][:, 0], self.scores[ddf_name][:, 1:])
-            plt.legend(keys)
-            plt.ylim([0, 1])
-            plt.ylabel('f1 score')
-            plt.xlabel('training items')
-            plt.title(ddf_name)
-            plt.tight_layout()
-            plt.savefig(os.path.join(self.result_folder, result_subfolder, 'f1_scores_%s.pdf' % ddf_name))
-            plt.close()
+            
+        wandb.log({
+        f"{ddf_name}_f1_KD": scores[0, 1],
+        f"{ddf_name}_f1_CL": scores[0, 2],
+        f"{ddf_name}_f1_HH": scores[0, 3],
+        f"{ddf_name}_f1_CY": scores[0, 4],
+        })
 
     def _compute_loss(self, mixes, est_mixes, est_impulses):
         """It's an interface to combine
@@ -264,6 +253,9 @@ class DrummerNetTrainer(object):
             self._compute_stft_loss(mixes, est_mixes, losses=losses, weight=1.0)
         if 'l1_reg' in self.loss_domains:
             losses['l1_reg'] = custom_losses.norm_losses(est_impulses, p=1, weight=self.args.l1_reg_lambda)
+        
+        losses_for_logging = {f"loss/{k}": v.item() for k, v in losses.items()}
+        wandb.log(losses_for_logging)
 
         return losses
 
