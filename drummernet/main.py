@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 from drummer_net import DrummerNet
 from inst_src_set import get_instset_drum
 import argparser
-
+import wandb
 import warnings
 
 warnings.filterwarnings('ignore', module='matplotlib')
@@ -60,6 +60,7 @@ def main(args):
 if __name__ == '__main__':
     my_arg_parser = argparser.ArgParser()
     args = my_arg_parser.parse()
-
+    args.add_argument('--wandb_project', default='drummernet')
+    wandb.init(project=args.wandb_project, config=vars(args), settings=wandb.Settings(start_method='fork'))
     print(args)
     main(args)
