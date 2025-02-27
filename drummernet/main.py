@@ -60,7 +60,6 @@ def main(args):
 if __name__ == '__main__':
     my_arg_parser = argparser.ArgParser()
     args = my_arg_parser.parse()
-    args.add_argument('--wandb_project', default='drummernet')
-    wandb.init(project=args.wandb_project, config=vars(args), settings=wandb.Settings(start_method='fork'))
+    wandb.init(project='drummernet', config=vars(args), settings=wandb.Settings(start_method='fork'))
     print(args)
     main(args)

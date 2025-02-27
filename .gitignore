@@ -6,3 +6,5 @@ data_evals/
 *.pyc
 **/__pycache__/
 drummernet/results/
+drummernet/wandb/
+ffmpeg-7.1.tar.xz
