@@ -8,3 +8,5 @@ data_evals/
 drummernet/results/
 drummernet/wandb/
 ffmpeg-7.1.tar.xz
+data_test/
+test/
