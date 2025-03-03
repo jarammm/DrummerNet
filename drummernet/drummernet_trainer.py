@@ -121,8 +121,8 @@ class DrummerNetTrainer(object):
                     print('..%s: %d items so far..' %
                           (self.exp_name, self.n_seen_items))
 
-        self.evaluate(result_subfolder='items_' + str(self.n_seen_items))
-        torch.save(self.drummer_net.state_dict(), f'items_{str(self.n_seen_items)}.pth')
+        self.evaluate()
+        torch.save(self.drummer_net.state_dict(), f'results/{self.exp_name}/items_{str(self.n_seen_items)}.pth')
 
     def train_epoch(self, tr_loader):
         """train the model for one epoch

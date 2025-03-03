@@ -13,7 +13,8 @@ def get_onsets(xml_annotation_file):
     onsets = {
         'HH': np.array([], dtype=np.int32),
         'KD': np.array([], dtype=np.int32),
-        'SD': np.array([], dtype=np.int32)
+        'CL': np.array([], dtype=np.int32),
+        'CY': np.array([], dtype=np.int32)
     }
 
     doc = xml.dom.minidom.parse(xml_annotation_file)
@@ -29,7 +30,7 @@ def get_onsets(xml_annotation_file):
             sys.stderr.write('Error reading xml file: unkown instrument '' + instrument + ''.\n')
             raise type(e)(e.message + ', unkown instrument '' + instrument + ''.')
 
-    return onsets['HH'], onsets['KD'], onsets['SD']
+    return onsets
 
 
 if __name__ == '__main__':
@@ -44,13 +45,7 @@ if __name__ == '__main__':
     xml_files = [f for f in xml_files if f.endswith('xml')]
     for fn in xml_files:
         path = os.path.join(smt_drums_folder, 'annotation_xml', fn)
-        onsets = {
-            'HH': np.array([], dtype=np.int32),
-            'KD': np.array([], dtype=np.int32),
-            'SD': np.array([], dtype=np.int32),
-        }
-
-        onsets['HH'], onsets['KD'], onsets['SD'] = get_onsets(os.path.join(smt_unzip, 'annotation_xml', fn))
+        onsets = get_onsets(os.path.join(smt_unzip, 'annotation_xml', fn))
 
         with open(os.path.join(smt_drums_folder, 'annotations', fn.replace('.xml', '.txt')), 'w') as f:
             for key in onsets:

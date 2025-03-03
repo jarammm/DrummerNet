@@ -193,11 +193,11 @@ class DrumEvaluator(object):
         self.device = device
         self.drummer_net = drummer_net.to(self.device)
         self.ddf = ddf
-        self.component_names = ['KD', 'SD', 'HH']
+        self.component_names = ['KD', 'CY', 'HH', 'CL']
         # atts - constants
         self.lst = 1024
         self.max_nsp = self.lst * 300
-        self.reset_data()
+        # self.reset_data()
         self.midis = [None] * len(self.ddf)
         self.est_onsets = [None] * len(self.ddf)
         self.ref_onsets = [None] * len(self.ddf)
