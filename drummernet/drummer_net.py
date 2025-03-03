@@ -22,7 +22,7 @@ class DrummerNet(nn.Module):
         self.test_inst_names = inst_names  #
 
         self.drum_srcset = drum_srcset
-        self.n_notes = self.drum_srcset.n_notes  # 11
+        self.n_notes = self.drum_srcset.n_notes  # 4
 
         self.sparsemax_lst = args.sparsemax_lst
         n_ch = args.num_channel

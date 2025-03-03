@@ -386,7 +386,7 @@ def get_ddf_bdt():
     """smt dataset loading function"""
     ddf_smt = DrumDatasetFolder(
         os.path.join(EVALDATA_PATH, 'BDT_DRUMS'), 'bdt',
-        label_map={'0': 'KD', '1': 'CL', '2': 'HH', '3': 'CY'},
+        label_map={'1': 'KD', '2': 'CL', '3': 'HH', '4': 'CY'},
         ann_folder='annotations',
         audio_folder='audio'
     )

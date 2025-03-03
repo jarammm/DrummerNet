@@ -33,7 +33,7 @@ class ArgParser:
         # experiment metadata
         self.add('-en', '--exp_name',
                  help='exp_name (that will be used for the result folder name)',
-                 type=str, required=True)
+                 type=str, default='temp_exp')
         # model
         self.add('-ks', '--kernel_size',
                  help='any positive, odd integer, kernel size (or length) for the analysis U-net',
@@ -80,8 +80,7 @@ class ArgParser:
         self.add('-ld', '--loss_domains',
                  help='string, loss domains, e.g. spectrum(=cqt),'
                       'melgram, stft, l1_reg',
-                 type=str, default=[],
-                 required=True,
+                 type=str, default=['spectrum'],
                  action='append')
         self.add('-n_mels', '--n_mels',
                  help='number of mel bands if melgram is in args.loss_domains',
@@ -93,10 +92,9 @@ class ArgParser:
         # thor:  do 'single quote' everywhere, docstrings are """!
         # flake8 will help with this!
         self.add('-metrics', '--metrics',
-                 type=str, default=[],
+                 type=str, default=['mae'],
                  help='mae, mse',
-                 action='append', required=True,
-                 )
+                 action='append')
         self.add('-source_norm', '--source_norm',
                  help='no, abssum, sqrsum',
                  type=str, default='sqrsum')
@@ -109,7 +107,7 @@ class ArgParser:
         self.add('-hpss', '--compare_after_hpss',
                  help='whether to use hpss before comparing x and x_hat',
                  type=str2bool, default=False)
-        self.add('-eval', '--eval', default='false',
+        self.add('-eval', '--eval', default='true',
                  help='if we do evaluation on some datasets (SMT, ENST, MDB..)',
                  type=str2bool)
 
@@ -122,3 +120,5 @@ class ArgParser:
                  help='resume number',
                  type=str, default='',
                  required=False)
+        self.add('-wdb', '--use_wandb',
+                 type=bool, default=False)

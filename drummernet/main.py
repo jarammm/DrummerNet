@@ -31,18 +31,17 @@ def main(args):
 
     drummer_net = drummer_net.to(DEVICE)
 
-    tr_batch_size = args.batch_size
     trainer = DrummerNetTrainer(drummer_net, args=args)
     trainer.prepare(args)
 
     # *** set which instruments to get
     n_epochs = [1] * 18
-    n_train_items = [tr_batch_size * 2 ** i for i in range(18)]
+    n_train_items = [args.batch_size * 2 ** i for i in range(18)]
     items_checks = [i * j for (i, j) in zip(n_train_items, n_epochs)]
     print('item check-points after this..:', items_checks)
     print('total %d n_items to train!' % (sum(items_checks)))
 
-    tr_params = {'batch_size': tr_batch_size, 'shuffle': True, 'num_workers': tr_batch_size}
+    tr_params = {'batch_size': args.batch_size, 'shuffle': True, 'num_workers': args.batch_size//4}
 
     for (n_epoch, n_train_item) in zip(n_epochs, n_train_items):
         drumstem_dataset = inst_dataset.TxtDrumstemDataset(
@@ -60,6 +59,7 @@ def main(args):
 if __name__ == '__main__':
     my_arg_parser = argparser.ArgParser()
     args = my_arg_parser.parse()
-    wandb.init(project='drummernet', config=vars(args), settings=wandb.Settings(start_method='fork'))
+    if args.use_wandb:
+        wandb.init(project='drummernet', config=vars(args), settings=wandb.Settings(start_method='fork'))
     print(args)
     main(args)

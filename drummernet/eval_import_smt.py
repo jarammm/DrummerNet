@@ -37,7 +37,7 @@ if __name__ == '__main__':
     smt_unzip = sys.argv[1]
 
     print('Processing annotations...')
-    smt_drums_folder = os.path.join('../data_evals', 'SMT_DRUMS')
+    smt_drums_folder = os.path.join('../data_evals', 'BDT_DRUMS')
     os.makedirs(os.path.join(smt_drums_folder, 'annotations'), exist_ok=True)
 
     xml_files = os.listdir(os.path.join(smt_unzip, 'annotation_xml'))

@@ -68,10 +68,10 @@ class DrummerNetTrainer(object):
             self.n_fft = 1024
 
         if args.eval is True:
-            ddfs = [evaluation.get_bdf_smt()] # evaluation.get_ddf_mdb(), evaluation.get_ddf_enst() --> add if you want
+            ddfs = [evaluation.get_ddf_bdt()] # evaluation.get_ddf_mdb(), evaluation.get_ddf_enst() --> add if you want
             self.evalers = [evaluation.DrumEvaluator(self.drummer_net, ddf,
                                                      device=DEVICE) for ddf in ddfs]
-            self.scores = {ddf.name: np.zeros((0, 5)) for ddf in ddfs}  # N by 4(x_n_item, KD, SD, HH)
+            self.scores = {ddf.name: np.zeros((0, 5)) for ddf in ddfs}  # N by 5(x_n_item, KD, SD, HH, CY)
         else:
             self.evalers = []
 
@@ -192,13 +192,8 @@ class DrummerNetTrainer(object):
         print(' '.join('{}:{:4.2f}'.format(k, v / float(len(tr_loader))) for (k, v) in accum_losses.items()) +
               ' on average.')
 
-    def evaluate(self, result_subfolder):
-        """do evaluation on other datasets using self.evalers, then save the result
-
-        Args:
-            result_subfolder (str): the subfolder name to save the result.
-
-        """
+    def evaluate(self):
+        """do evaluation on other datasets using self.evalers, then save the result"""
         self.drummer_net.eval()
         keys = ['KD', 'CL', 'HH', 'CY']
         for evaler in self.evalers:
@@ -215,13 +210,13 @@ class DrummerNetTrainer(object):
                 scores[0, i + 1] = np.array(evaler.f_scores[key]).mean(axis=0)[0]
 
             self.scores[ddf_name] = np.concatenate((self.scores[ddf_name], scores), axis=0)
-            
-        wandb.log({
-        f"{ddf_name}_f1_KD": scores[0, 1],
-        f"{ddf_name}_f1_CL": scores[0, 2],
-        f"{ddf_name}_f1_HH": scores[0, 3],
-        f"{ddf_name}_f1_CY": scores[0, 4],
-        })
+        if self.args.use_wandb:    
+            wandb.log({
+            f"{ddf_name}_f1_KD": scores[0, 1],
+            f"{ddf_name}_f1_CL": scores[0, 2],
+            f"{ddf_name}_f1_HH": scores[0, 3],
+            f"{ddf_name}_f1_CY": scores[0, 4],
+            })
 
     def _compute_loss(self, mixes, est_mixes, est_impulses):
         """It's an interface to combine
@@ -254,8 +249,9 @@ class DrummerNetTrainer(object):
         if 'l1_reg' in self.loss_domains:
             losses['l1_reg'] = custom_losses.norm_losses(est_impulses, p=1, weight=self.args.l1_reg_lambda)
         
-        losses_for_logging = {f"loss/{k}": v.item() for k, v in losses.items()}
-        wandb.log(losses_for_logging)
+        if self.args.use_wandb:
+            losses_for_logging = {f"loss/{k}": v.item() for k, v in losses.items()}
+            wandb.log(losses_for_logging)
 
         return losses
 
